@@ -1,0 +1,205 @@
+Sure! Here are 7 intermediate-to-advanced Bash scripts with full code and instructions on how to run them. These cover automation, file handling, system monitoring, etc.
+
+✅ 1. Backup Script with Logs
+Purpose: Backs up a directory and logs the output.
+
+  #!/bin/bash
+
+SOURCE_DIR="$HOME/Documents"
+BACKUP_DIR="$HOME/backup"
+LOG_FILE="$HOME/backup/backup.log"
+
+mkdir -p "$BACKUP_DIR"
+
+DATE=$(date +"%Y-%m-%d_%H-%M-%S")
+ARCHIVE_NAME="backup_$DATE.tar.gz"
+
+tar -czf "$BACKUP_DIR/$ARCHIVE_NAME" "$SOURCE_DIR" 2>>"$LOG_FILE"
+
+if [ $? -eq 0 ]; then
+    echo "$DATE: Backup successful: $ARCHIVE_NAME" >> "$LOG_FILE"
+else
+    echo "$DATE: Backup FAILED!" >> "$LOG_FILE"
+fi
+
+
+  How to run:
+bash
+Copied
+Edit
+
+
+chmod +x backup.sh
+./backup.sh
+
+
+
+
+  ✅ 2. Disk Usage Alert
+Purpose: Sends alert if disk usage exceeds 80%
+
+  #!/bin/bash
+
+THRESHOLD=80
+
+USAGE=$(df / | grep / | awk '{ print $5 }' | sed 's/%//g')
+
+if [ "$USAGE" -gt "$THRESHOLD" ]; then
+  echo "Warning: Disk usage is above $THRESHOLD%! Current: $USAGE%"
+else
+  echo "Disk usage is OK: $USAGE%"
+fi
+
+
+  How to run:
+bash
+Copy
+Edit
+chmod +x disk_alert.sh
+./disk_alert.sh
+
+
+
+  ✅ 3. Multi-threaded File Downloader
+Purpose: Downloads multiple files concurrently.
+
+bash
+Copy
+Edit
+#!/bin/bash
+
+URLS=("http://ipv4.download.thinkbroadband.com/5MB.zip"
+      "http://ipv4.download.thinkbroadband.com/10MB.zip"
+      "http://ipv4.download.thinkbroadband.com/20MB.zip")
+
+download_file() {
+    url=$1
+    wget -q "$url" &
+}
+
+for url in "${URLS[@]}"; do
+    download_file "$url"
+done
+
+wait
+echo "All downloads completed!"
+How to run:
+bash
+Copy
+Edit
+chmod +x downloader.sh
+./downloader.sh
+✅ 4. Simple Password Generator
+Purpose: Generates a strong random password.
+
+bash
+Copy
+Edit
+#!/bin/bash
+
+LENGTH=16
+PASSWORD=$(tr -dc A-Za-z0-9_@#%&* < /dev/urandom | head -c $LENGTH)
+
+echo "Generated Password: $PASSWORD"
+How to run:
+bash
+Copy
+Edit
+chmod +x password_gen.sh
+./password_gen.sh
+✅ 5. Service Monitor & Auto-Restarter
+Purpose: Checks if a service is running, restarts if stopped.
+
+bash
+Copy
+Edit
+#!/bin/bash
+
+SERVICE="apache2"
+
+if systemctl is-active --quiet $SERVICE; then
+    echo "$SERVICE is running"
+else
+    echo "$SERVICE is NOT running... restarting"
+    sudo systemctl restart $SERVICE
+    if systemctl is-active --quiet $SERVICE; then
+        echo "$SERVICE restarted successfully"
+    else
+        echo "Failed to restart $SERVICE"
+    fi
+fi
+How to run:
+bash
+Copy
+Edit
+chmod +x service_monitor.sh
+./service_monitor.sh
+✅ 6. System Health Report
+Purpose: Displays CPU, memory, and disk info.
+
+bash
+Copy
+Edit
+#!/bin/bash
+
+echo "===== System Health Report ====="
+echo "Date: $(date)"
+echo "Uptime: $(uptime -p)"
+echo
+echo "CPU Load:"
+uptime | awk -F'load average:' '{ print $2 }'
+echo
+echo "Memory Usage:"
+free -h
+echo
+echo "Disk Usage:"
+df -h
+echo
+echo "Top 5 memory-consuming processes:"
+ps aux --sort=-%mem | head -6
+How to run:
+bash
+Copy
+Edit
+chmod +x health_report.sh
+./health_report.sh
+✅ 7. Rename Files in Bulk
+Purpose: Renames all .txt files in a folder to file1.txt, file2.txt, etc.
+
+bash
+Copy
+Edit
+#!/bin/bash
+
+counter=1
+for file in *.txt; do
+    mv "$file" "file$counter.txt"
+    ((counter++))
+done
+
+echo "Files renamed."
+How to run:
+bash
+Copy
+Edit
+chmod +x rename_files.sh
+./rename_files.sh
+💡 To run any script:
+Copy the code into a .sh file (e.g., script.sh).
+
+Make it executable:
+
+bash
+Copy
+Edit
+chmod +x script.sh
+Run it:
+
+bash
+Copy
+Edit
+./script.sh
+
+  
+
+  
