@@ -1,0 +1,60 @@
+Here are 5 advanced crontab examples in openEuler that involve user-specific tasks — such as monitoring users, auto-logout, email alerts, and more.
+
+✅ Reminder: Use crontab -e as root or specific user with crontab -u username -e
+👤 1. Log All Currently Logged-In Users Every 5 Minutes
+c
+Copy
+Edit
+*/5 * * * * who >> /var/log/loggedin_users.log
+Logs all currently logged-in users every 5 minutes.
+
+Useful for monitoring user activity.
+
+⏳ 2. Force Logout Inactive Users After 15 Minutes (Every Hour)
+cron
+Copy
+Edit
+0 * * * * pkill -KILL -t $(who -u | awk '$6 ~ /old/' | awk '{print $2}')
+Kills inactive sessions marked as "old".
+
+who -u shows idle time. This command logs out inactive users.
+
+📬 3. Email Alert If Specific User Logs In
+cron
+Copy
+Edit
+* * * * * who | grep 'targetuser' && echo "User targetuser logged in on $(date)" | mail -s "Login Alert" root
+Checks every minute if targetuser logged in.
+
+Sends email to root (requires mailx or mail package installed).
+
+🔒 4. Lock User Account at Midnight Automatically
+c
+Copy
+Edit
+0 0 * * * usermod -L student
+Locks the student user account at midnight.
+
+Useful for controlling access after working hours.
+
+🔓 5. Unlock User Account at 8:00 AM
+cron
+Copy
+Edit
+0 8 * * * usermod -U student
+Unlocks student account at 8:00 AM.
+
+Pairs with the above job for scheduled access windows.
+
+🧠 Pro Tips
+Use logger for writing to /var/log/messages:
+
+cron
+Copy
+Edit
+* * * * * logger "Custom log entry for user monitoring"
+Use environment variables inside cron with care.
+
+Use full paths for all commands (e.g., /usr/sbin/usermod, /usr/bin/who).
+
+Would you like a full script that combines some of these into one .sh file?
